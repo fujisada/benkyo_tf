@@ -42,6 +42,6 @@ for step in range(20000):
         print str(step+1) + '\t' + str(sess.run(loss, feed_dict={x: input_x, y_: input_y}))
 
 print "\ntrained model: y = %f sin( %f * x + %f)  + %f" % (sess.run(a), sess.run(w), sess.run(p), sess.run(c))
-print "predict values:"
+print "教師データを学習済みモデルで計算"
 print sess.run(y, feed_dict={x: input_x})
 

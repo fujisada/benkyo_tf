@@ -31,7 +31,8 @@ y_ = tf.placeholder("float", [None, 1])
 
 # モデル式定義
 w = tf.Variable([[0.1],[0.1],[0.1],[0.1],[0.1]], name="weight")
-y = tf.sigmoid(tf.matmul(x, w))
+b = tf.Variable([0.1], name="bias")
+y = tf.sigmoid(tf.matmul(x, w)+b)
 
 # 実際に最適化を行う対象：実際の値と現在のパラメータのモデルで求めた値の二乗誤差
 loss = tf.reduce_sum(tf.square(y_ - y))

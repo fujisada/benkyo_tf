@@ -27,20 +27,27 @@ input_y = [
 	[1.],
 	[1.]]
 
+input_num = 5
+hidden_num = 20
+output_num = 1
+
 # placeholder宣言
-x = tf.placeholder("float", [None, 5])
-y_ = tf.placeholder("float", [None, 1])
+x = tf.placeholder("float", [None, input_num])
+y_ = tf.placeholder("float", [None, output_num])
 
 # モデル式定義
-w = tf.Variable([[0.1],[0.1],[0.1],[0.1],[0.1]], name="weight")
-b = tf.Variable([0.1], name="bias")
-y = tf.sigmoid(tf.matmul(x, w)+b)
+wh = tf.Variable(tf.random_normal([input_num, hidden_num], mean=0.0, stddev=0.05))
+bh = tf.Variable(tf.random_normal([hidden_num], mean=0.0, stddev=0.05))
+yh = tf.sigmoid(tf.matmul(x, wh)+bh)
+wo = tf.Variable(tf.zeros([hidden_num, output_num]))
+bo = tf.Variable(tf.zeros([output_num]))
+yo = tf.sigmoid(tf.matmul(yh, wo)+bo)
 
 # 実際に最適化を行う対象：実際の値と現在のパラメータのモデルで求めた値の二乗誤差
-loss = tf.reduce_sum(tf.square(y_ - y))
+loss = tf.reduce_sum(tf.square(y_ - yo))
 
 # 最適化アルゴリズムは最急降下法
-train_step = tf.train.GradientDescentOptimizer(0.05).minimize(loss)
+train_step = tf.train.AdamOptimizer().minimize(loss)
 
 
 sess = tf.Session()
@@ -55,7 +62,7 @@ for step in range(50000):
         print str(step+1) + '\t' + str(sess.run(loss, feed_dict={x: input_x, y_: input_y}))
 
 print "predict values:"
-print sess.run(y, feed_dict={x: input_x})
+print sess.run(yo, feed_dict={x: input_x})
 
 print "別のデータ使って計算"
 next = [
@@ -64,5 +71,5 @@ next = [
 	[1., 1., 1., 1., 1.],
 	[0., 0., 1., 0., 1.],
 	[1., 1., 0., 1., 0.]]
-print sess.run(y, feed_dict={x: next})
+print sess.run(yo, feed_dict={x: next})
 
